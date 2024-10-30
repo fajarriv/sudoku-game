@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test": "vitest",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "sudoku": "node --loader ts-node/esm src/core/sudoku.ts",
-    "preview": "vite preview"    
+    "preview": "vite preview"
   },
   "dependencies": {
     "@million/lint": "^1.0.11",
