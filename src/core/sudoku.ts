@@ -46,7 +46,8 @@ export const isBoxValid = (board: Board, row: number, col: number, num: number):
   !getBox(board,row, col).includes(num)
 
 export const isValidPlacement = (board: Board, row: number, col: number, num: number): boolean =>
-  isRowValid(board, row, num) 
+  isRowValid(board, row, num) && isColumnValid(board, col, num) && isBoxValid(board, row, col ,num)
+
 // mencari empty cell di board, akan mereturn posisi row dan col nya
 export const findEmptyCell = (board: Board): O.Option<[number, number]> =>
   pipe(
@@ -88,7 +89,7 @@ export const fillPuzzle = (startingBoard: Board): E.Either<Error, Board> => {
     pipe(
       findEmptyCell(board),
       O.match(
-        () => E.right(board), // Board complete if no empty cells
+        () => E.right(board), 
         ([rowIndex, colIndex]) => { 
           const shuffledNums = shuffle(numArray);
 
@@ -96,24 +97,23 @@ export const fillPuzzle = (startingBoard: Board): E.Either<Error, Board> => {
             shuffledNums,
             A.reduce(E.left(new Error("Unable to fill puzzle")) as E.Either<Error, Board>, (acc, num) => {
               if (counter > 20000000) {
-                return E.left(new Error("Recursion Timeout")); // Stop if counter limit exceeded
+                return E.left(new Error("Recursion Timeout"));
               }
               counter++;
               if (isValidPlacement(board, rowIndex, colIndex, num)) {
                 const newBoard = board.map(row => [...row]); 
                 newBoard[rowIndex][colIndex] = num;
 
-                // Recursive call to try filling the next empty cell
                 return pipe(
                   attemptFill(newBoard),
                   E.match(
-                    () => acc, // If unsuccessful, backtrack
-                    updatedBoard => E.right(updatedBoard) // Return the successful board
+                    () => acc, 
+                    updatedBoard => E.right(updatedBoard) 
                   )
                 );
               }
               else {
-                return acc; // Continue to next number if not safe
+                return acc; 
               }
             })
           );
