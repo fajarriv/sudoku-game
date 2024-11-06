@@ -1,0 +1,16 @@
+/* src/components/Keypad.css */
+.keypad {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 16px;
+    width: 500px;
+  }
+  
+  .keypad button {
+    width: 40px;
+    height: 40px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
