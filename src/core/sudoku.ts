@@ -8,7 +8,6 @@ export type Cell = number
 export type Row = Cell[]
 export type Board = Row[]
 
-const GRID_SIZE = 9
 const BOX_SIZE = 3
 const EMPTY_CELL: Cell = 0
 const numArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -47,6 +46,37 @@ export const isBoxValid = (board: Board, row: number, col: number, num: number):
 
 export const isValidPlacement = (board: Board, row: number, col: number, num: number): boolean =>
   isRowValid(board, row, num) && isColumnValid(board, col, num) && isBoxValid(board, row, col ,num)
+
+export const findInvalids = (board: Board, row: number, col: number, num: number): number[][] => {
+  const collectIndexes = (array: Row, rowIndex: number, isRow: boolean) =>
+    pipe(
+      array,
+      A.reduceWithIndex<number, number[][]>([], (colIndex, acc, cell) =>
+        cell === num ? [...acc, isRow ? [rowIndex, colIndex] : [colIndex, rowIndex]] : acc
+      )
+    )
+
+  const rowIndexes = collectIndexes(getRow(board, row), row, true)
+  const colIndexes = collectIndexes(getColumn(board, col), col, false)
+
+  const box = getBox(board, row, col)
+  const boxIndexes = pipe(
+    box,
+    A.reduceWithIndex<number, number[][]>([], (index, acc, cell) => {
+      if (cell === num) {
+        const boxRow = Math.floor(row / BOX_SIZE) * BOX_SIZE
+        const boxCol = Math.floor(col / BOX_SIZE) * BOX_SIZE
+        const rowOffset = Math.floor(index / BOX_SIZE)
+        const colOffset = index % BOX_SIZE
+        return [...acc, [boxRow + rowOffset, boxCol + colOffset]]
+      }
+      return acc
+    })
+  )
+
+  let result = [...rowIndexes, ...colIndexes, ...boxIndexes]
+  return result.length === 3 ? result.filter(([r, c]) => !(r === row && c === col)) : result
+}
 
 // mencari empty cell di board, akan mereturn posisi row dan col nya
 export const findEmptyCell = (board: Board): O.Option<[number, number]> =>
