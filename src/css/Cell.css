@@ -1,4 +1,4 @@
-.cell {
+/* .cell {
     width: 50px;
     height: 50px;
     display: flex;
@@ -29,4 +29,4 @@
   
   .board-row .cell:nth-child(3n) {
     border-right-width: 2px;
-  }
+  } */

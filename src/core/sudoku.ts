@@ -74,7 +74,7 @@ export const findInvalids = (board: Board, row: number, col: number, num: number
     })
   )
 
-  let result = [...rowIndexes, ...colIndexes, ...boxIndexes]
+  const result = [...rowIndexes, ...colIndexes, ...boxIndexes]
   return result.length === 3 ? result.filter(([r, c]) => !(r === row && c === col)) : result
 }
 
