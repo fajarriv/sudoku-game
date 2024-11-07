@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { Board } from "./Board";
 import type { Board as TBoard } from "../../core/sudoku";
 import { Keypad } from "./Keypad";
@@ -21,27 +21,21 @@ export const SudokuGame = memo(function SudokuGame() {
   const [initialBoard] = useState(exampleBoard);
   const [currentBoard, setCurrentBoard] = useState(exampleBoard);
   const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
-  const [isComplete, setIsComplete] = useState(false);
-
-  const memoizedCurrentBoard = useMemo(() => currentBoard, [currentBoard]);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
 
   const handleNumberInput = useCallback(
     (num: number) => {
       if (selectedCell) {
         const [row, col] = selectedCell;
-        const newBoard = currentBoard.map((rowValues, rowIndex) => {
-          const newRow = rowValues.map((cellValue, colIndex) => {
-            if (rowIndex === row && colIndex === col) {
-              return num;
-            }
-            return cellValue;
-          });
-          return newRow;
+        setCurrentBoard((current) => {
+          const newBoard = [...current];
+          newBoard[row] = [...newBoard[row]];
+          newBoard[row][col] = num;
+          return newBoard;
         });
-        setCurrentBoard(newBoard);
       }
     },
-    [selectedCell, currentBoard]
+    [selectedCell]
   );
 
   const handleCellClick = useCallback(
@@ -71,18 +65,20 @@ export const SudokuGame = memo(function SudokuGame() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedCell, currentBoard, handleNumberInput]);
+  }, [handleNumberInput]);
 
   return (
     <div className="flex flex-col md:flex-row items-center gap-6">
       <Board
         initialBoard={initialBoard}
-        board={memoizedCurrentBoard}
+        board={currentBoard}
         isCompleted={isComplete}
         selectedCell={selectedCell}
         onClickHandler={handleCellClick}
       />
-      <Keypad onClickHandler={handleNumberInput} />
+      <div className="w-full space-y-3">
+        <Keypad onClickHandler={handleNumberInput} />
+      </div>
     </div>
   );
 });
