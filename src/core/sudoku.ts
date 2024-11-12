@@ -95,20 +95,13 @@ export const findEmptyCell = (board: Board): O.Option<[number, number]> =>
 export const shuffle = (array: number[]): number[] =>
   pipe(
     A.range(0, array.length - 1),
-    A.foldLeft(
-      () => array,
-      () => {
-        const result = [...array] 
-        return pipe(
-          A.range(0, result.length - 1),
-          A.map(i => {
-            const j = R.randomInt(0, i)();
-            [result[i], result[j]] = [result[j], result[i]]
-          }),
-          () => result 
-        )
-      }
-    )
+    A.reduce([...array], (acc, i) => {
+      const j = R.randomInt(0, i)()
+      const temp = acc[i]
+      acc[i] = acc[j]
+      acc[j] = temp
+      return acc
+    })
   )
 
 
