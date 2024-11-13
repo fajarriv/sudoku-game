@@ -47,35 +47,25 @@ export const isBoxValid = (board: Board, row: number, col: number, num: number):
 export const isValidPlacement = (board: Board, row: number, col: number, num: number): boolean =>
   isRowValid(board, row, num) && isColumnValid(board, col, num) && isBoxValid(board, row, col ,num)
 
-export const findInvalids = (board: Board, row: number, col: number, num: number): number[][] => {
-  const collectIndexes = (array: Row, rowIndex: number, isRow: boolean) =>
-    pipe(
-      array,
-      A.reduceWithIndex<number, number[][]>([], (colIndex, acc, cell) =>
-        cell === num ? [...acc, isRow ? [rowIndex, colIndex] : [colIndex, rowIndex]] : acc
+
+export const findInvalids = (board: Board): number[][] => {
+  return pipe(
+    board,
+    A.reduceWithIndex<Row, number[][]>([], (rowIdx, accRows, row) =>
+      pipe(
+        row,
+        A.reduceWithIndex<Cell, number[][]>(accRows, (colIdx, accInner, cell) => {
+          const originalValue = board[rowIdx][colIdx];
+          board[rowIdx][colIdx] = 0;
+          const invalid = cell !== 0 && !isValidPlacement(board, rowIdx, colIdx, cell);
+
+          board[rowIdx][colIdx] = originalValue;
+          return invalid ? [...accInner, [rowIdx, colIdx]] : accInner;
+        }
+        )
       )
     )
-
-  const rowIndexes = collectIndexes(getRow(board, row), row, true)
-  const colIndexes = collectIndexes(getColumn(board, col), col, false)
-
-  const box = getBox(board, row, col)
-  const boxIndexes = pipe(
-    box,
-    A.reduceWithIndex<number, number[][]>([], (index, acc, cell) => {
-      if (cell === num) {
-        const boxRow = Math.floor(row / BOX_SIZE) * BOX_SIZE
-        const boxCol = Math.floor(col / BOX_SIZE) * BOX_SIZE
-        const rowOffset = Math.floor(index / BOX_SIZE)
-        const colOffset = index % BOX_SIZE
-        return [...acc, [boxRow + rowOffset, boxCol + colOffset]]
-      }
-      return acc
-    })
   )
-
-  const result = [...rowIndexes, ...colIndexes, ...boxIndexes]
-  return result.length === 3 ? result.filter(([r, c]) => !(r === row && c === col)) : result
 }
 
 // mencari empty cell di board, akan mereturn posisi row dan col nya

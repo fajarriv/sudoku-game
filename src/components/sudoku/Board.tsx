@@ -4,6 +4,7 @@ type BoardProps = {
   isCompleted: boolean;
   selectedCell: [number, number] | null;
   onClickHandler: (row: number, col: number) => void;
+  invalidCells: number[][];
 };
 
 export const Board: React.FC<BoardProps> = ({
@@ -12,6 +13,7 @@ export const Board: React.FC<BoardProps> = ({
   isCompleted,
   selectedCell,
   onClickHandler,
+  invalidCells,
 }) => {
   return (
     <div className="border-[#ddd] border shadow-sm rounded p-4 w-fit flex flex-shrink-0">
@@ -26,6 +28,11 @@ export const Board: React.FC<BoardProps> = ({
                   initialBoard[rowIdx][colIdx] === 0
                     ? "bg-[#242424]"
                     : "bg-[#959ea53a]"
+                }
+                ${
+                  invalidCells.some(([r, c]) => r === rowIdx && c === colIdx)
+                  ? "bg-[#ff0d004e]"
+                  : ""
                 }
                 ${
                   selectedCell?.[0] === rowIdx && selectedCell?.[1] === colIdx

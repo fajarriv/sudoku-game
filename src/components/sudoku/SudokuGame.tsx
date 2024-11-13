@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import { Board } from "./Board";
-import type { Board as TBoard } from "../../core/sudoku";
+import { findInvalids, type Board as TBoard } from "../../core/sudoku";
 import { Keypad } from "./Keypad";
 
 type CellPosition = [number, number] | null;
@@ -22,6 +22,7 @@ export const SudokuGame = memo(function SudokuGame() {
   const [currentBoard, setCurrentBoard] = useState(exampleBoard);
   const [selectedCell, setSelectedCell] = useState<CellPosition>(null);
   const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [invalids, setInvalids] = useState<number[][]>([[]]);
 
   const handleNumberInput = useCallback(
     (num: number) => {
@@ -33,6 +34,7 @@ export const SudokuGame = memo(function SudokuGame() {
           newBoard[row][col] = num;
           return newBoard;
         });
+        setInvalids(findInvalids(currentBoard));
       }
     },
     [selectedCell]
@@ -75,6 +77,7 @@ export const SudokuGame = memo(function SudokuGame() {
         isCompleted={isComplete}
         selectedCell={selectedCell}
         onClickHandler={handleCellClick}
+        invalidCells={invalids}
       />
       <div className="w-full space-y-3">
         <Keypad onClickHandler={handleNumberInput} />
