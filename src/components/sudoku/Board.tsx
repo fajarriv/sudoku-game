@@ -31,8 +31,8 @@ export const Board: React.FC<BoardProps> = ({
                 }
                 ${
                   invalidCells.some(([r, c]) => r === rowIdx && c === colIdx)
-                  ? "bg-[#ff0d004e]"
-                  : ""
+                    ? "bg-[#ff0d004e]"
+                    : ""
                 }
                 ${
                   selectedCell?.[0] === rowIdx && selectedCell?.[1] === colIdx
