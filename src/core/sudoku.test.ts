@@ -148,6 +148,7 @@ describe('Sudoku Solver', () => {
     const start = performance.now();
     const originalArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const shuffledArray = shuffle(originalArray);
+    // console.log(shuffledArray)
     
     expect(shuffledArray.length).toBe(originalArray.length);
     expect(shuffledArray.sort()).toEqual(originalArray.sort());
@@ -176,7 +177,7 @@ describe('Sudoku Solver', () => {
     console.log(`fillPuzzle function execution time: ${end - start} milliseconds`);
     
     // Check that the returned board is filled with valid Sudoku numbers
-    const filledBoard = result.right;
+    const filledBoard = E.isRight(result) ? result.right : [];
     expect(filledBoard).toHaveLength(9);
     filledBoard.forEach((row: number[]) => {
       expect(row).toHaveLength(9);
