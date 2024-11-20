@@ -175,7 +175,7 @@ describe('Sudoku Solver', () => {
 
     const end = performance.now();
     console.log(`fillPuzzle function execution time: ${end - start} milliseconds`);
-    
+
     // Check that the returned board is filled with valid Sudoku numbers
     const filledBoard = E.isRight(result) ? result.right : [];
     expect(filledBoard).toHaveLength(9);
