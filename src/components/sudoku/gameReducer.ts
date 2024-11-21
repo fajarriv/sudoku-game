@@ -27,7 +27,7 @@ export const createInitialState = (): GameState => {
     currentBoard: zeros,
     selectedCell: null,
     invalids: [[]],
-    isComplete: true,
+    isComplete: false,
     showDifficultyModal: true,
   };
 };
