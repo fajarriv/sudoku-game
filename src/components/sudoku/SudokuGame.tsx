@@ -8,6 +8,7 @@ import { generateGame, type Difficulty } from "../../core/sudokuGenerator";
 import * as E from "fp-ts/Either";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { gameReducer, createInitialState } from "./gameReducer";
+import { RefreshCcw, RotateCw } from "lucide-react"; // Add this line
 
 const STORAGE_KEY = "sudoku_cloneBoard";
 const STORAGE_TIME_KEY = "sudoku_lastSaveTime";
@@ -55,6 +56,10 @@ export const SudokuGame = memo(function SudokuGame() {
       AsyncStorage.removeItem(STORAGE_INITIALBOARD),
       AsyncStorage.removeItem(TIMER_STORAGE_KEY),
     ]);
+  };
+
+  const resetBoard = () => {
+    dispatch({ type: "INITIALIZE_BOARD", payload: { board: state.initialBoard } });
   };
 
   const handleNumberInput = useCallback((num: number) => {
@@ -173,6 +178,20 @@ export const SudokuGame = memo(function SudokuGame() {
       <div className="w-full space-y-3">
         <SudokuTimer isComplete={state.isComplete}/>
         <Keypad onClickHandler={handleNumberInput} />
+        <div className="flex justify-around border-[#ddd] border shadow-sm rounded p-4 bg-[#959ea53a] w-full">
+        <button
+          onClick={resetBoard}
+          className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+        >
+          <RotateCw className="mr-2"/> Reset Board
+        </button>
+        <button
+          onClick={resetGame}
+          className="flex items-center bg-[#ff0d004e] text-white py-2 px-4 rounded-lg hover:bg-[#ff0d0077]"
+        >
+          <RefreshCcw className="mr-2"/> Restart Game
+        </button>
+      </div>
       </div>
 
       {state.isComplete && !state.showDifficultyModal && (
