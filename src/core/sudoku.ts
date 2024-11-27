@@ -1,7 +1,6 @@
 import * as O from 'fp-ts/Option'
 import * as A from 'fp-ts/Array'
 import * as R from 'fp-ts/Random'
-import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function'
 
 export type Cell = number
@@ -10,7 +9,6 @@ export type Board = Row[]
 
 const BOX_SIZE = 3
 const EMPTY_CELL: Cell = 0
-const numArray = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 export const range = (start: number, end: number): number[] =>
   A.makeBy(end - start, (i) => i + start)

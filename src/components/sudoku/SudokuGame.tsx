@@ -2,6 +2,7 @@ import { useEffect, useCallback, memo, useReducer } from "react";
 import { Board } from "./Board";
 import { type Board as TBoard } from "../../core/sudoku";
 import { Keypad } from "./Keypad";
+import { SudokuTimer } from "./Timer";
 import Confetti from "react-confetti";
 import { generateGame, type Difficulty } from "../../core/sudokuGenerator";
 import * as E from "fp-ts/Either";
@@ -13,6 +14,8 @@ const STORAGE_TIME_KEY = "sudoku_lastSaveTime";
 const STORAGE_INITIALBOARD = "sudoku_initialBoard";
 const STORAGE_INVALIDS = "sudoku_invalidCells";
 const STORAGE_STATUS = "sudoku_status";
+const TIMER_STORAGE_KEY = "sudoku_timer";
+
 const FIFTEEN_MINUTES = 15 * 60 * 1000;
 
 export const SudokuGame = memo(function SudokuGame() {
@@ -50,6 +53,7 @@ export const SudokuGame = memo(function SudokuGame() {
       AsyncStorage.removeItem(STORAGE_INVALIDS),
       AsyncStorage.removeItem(STORAGE_STATUS),
       AsyncStorage.removeItem(STORAGE_INITIALBOARD),
+      AsyncStorage.removeItem(TIMER_STORAGE_KEY),
     ]);
   };
 
@@ -167,6 +171,7 @@ export const SudokuGame = memo(function SudokuGame() {
         invalidCells={state.invalids}
       />
       <div className="w-full space-y-3">
+        <SudokuTimer isComplete={state.isComplete}/>
         <Keypad onClickHandler={handleNumberInput} />
       </div>
 
