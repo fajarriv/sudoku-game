@@ -55,7 +55,7 @@ export const SudokuGame = memo(function SudokuGame() {
       AsyncStorage.removeItem(STORAGE_STATUS),
       AsyncStorage.removeItem(STORAGE_INITIALBOARD),
       AsyncStorage.removeItem(TIMER_STORAGE_KEY),
-    ]);
+    ]); 
   };
 
   const resetBoard = () => {
@@ -73,13 +73,14 @@ export const SudokuGame = memo(function SudokuGame() {
   useEffect(() => {
     const loadBoard = async () => {
       try {
-        const [initial, savedBoard, savedTime, savedInvalids, savedStatus] =
+        const [initial, savedBoard, savedTime, savedInvalids, savedStatus, savedTimer] =
           await Promise.all([
             AsyncStorage.getItem(STORAGE_INITIALBOARD),
             AsyncStorage.getItem(STORAGE_KEY),
             AsyncStorage.getItem(STORAGE_TIME_KEY),
             AsyncStorage.getItem(STORAGE_INVALIDS),
             AsyncStorage.getItem(STORAGE_STATUS),
+            AsyncStorage.getItem(TIMER_STORAGE_KEY),
           ]);
 
         if (
@@ -87,7 +88,8 @@ export const SudokuGame = memo(function SudokuGame() {
           savedBoard &&
           savedTime &&
           savedInvalids &&
-          savedStatus
+          savedStatus &&
+          savedTimer
         ) {
           const elapsedTime = Date.now() - parseInt(savedTime);
           if (elapsedTime < FIFTEEN_MINUTES) {
@@ -99,6 +101,7 @@ export const SudokuGame = memo(function SudokuGame() {
                 invalids: JSON.parse(savedInvalids),
                 isComplete: JSON.parse(savedStatus),
                 selectedCell: null,
+                timer: parseInt(savedTimer, 10),
               },
             });
           }
@@ -109,6 +112,19 @@ export const SudokuGame = memo(function SudokuGame() {
     };
     loadBoard();
   }, []);
+
+  // Timer logic
+  useEffect(() => {    
+    const interval = setInterval(() => {
+      if (!state.isComplete && !state.showDifficultyModal) {
+        dispatch({ type: 'UPDATE_TIMER', payload: state.timer + 1 });
+        AsyncStorage.setItem(TIMER_STORAGE_KEY, (state.timer + 1).toString());
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [state.isComplete, state.showDifficultyModal, state.timer]);
+
 
   // event listener for keyboard input
   useEffect(() => {
@@ -176,7 +192,7 @@ export const SudokuGame = memo(function SudokuGame() {
         invalidCells={state.invalids}
       />
       <div className="w-full space-y-3">
-        <SudokuTimer isComplete={state.isComplete}/>
+        <SudokuTimer timer={state.timer}/>
         <Keypad onClickHandler={handleNumberInput} />
         <div className="flex justify-around border-[#ddd] border shadow-sm rounded p-4 bg-[#959ea53a] w-full">
         <button

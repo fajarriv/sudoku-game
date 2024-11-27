@@ -11,6 +11,7 @@ export type GameState = {
   invalids: number[][];
   isComplete: boolean;
   showDifficultyModal: boolean;
+  timer: number;
 }
 
 export type GameAction = 
@@ -19,6 +20,7 @@ export type GameAction =
   | { type: 'SELECT_CELL'; payload: { row: number; col: number } }
   | { type: 'RESET_GAME' }
   | { type: 'LOAD_SAVED_GAME'; payload: Omit<GameState, 'showDifficultyModal'> }
+  | { type: 'UPDATE_TIMER'; payload: number }
 
 export const createInitialState = (): GameState => {
   const zeros = Array(9).fill(null).map(() => Array(9).fill(0));
@@ -29,6 +31,7 @@ export const createInitialState = (): GameState => {
     invalids: [[]],
     isComplete: false,
     showDifficultyModal: true,
+    timer: 0,
   };
 };
 
@@ -85,6 +88,9 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
         ...action.payload,
         showDifficultyModal: false
       };
+
+    case 'UPDATE_TIMER':
+        return { ...state, timer: action.payload };
 
     default:
       return state;
