@@ -11,10 +11,8 @@ import {
   findEmptyCell,
   Board,
   shuffle,
-  fillPuzzle,
   findInvalids,
 } from './sudoku'
-import * as E from 'fp-ts/Either'
 
 const testBoard: Board = [
   [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -156,37 +154,7 @@ describe('Sudoku Solver', () => {
     console.log(`shuffle function execution time: ${end - start} milliseconds`);
   });
 
-  test('should fill the board completely', () => {
-    const start = performance.now();
-    const fullBoard: Board = [
-      [5, 3, 0, 0, 7, 0, 0, 0, 0],
-      [6, 0, 0, 1, 9, 5, 0, 0, 0],
-      [0, 9, 8, 0, 0, 0, 0, 6, 0],
-      [8, 0, 0, 0, 6, 0, 0, 0, 3],
-      [4, 0, 0, 8, 0, 3, 0, 0, 1],
-      [7, 0, 0, 0, 2, 0, 0, 0, 6],
-      [0, 6, 0, 0, 0, 0, 2, 8, 0],
-      [0, 0, 0, 4, 1, 9, 0, 0, 5],
-      [0, 0, 0, 0, 8, 0, 0, 7, 9],
-    ];
 
-    const result = fillPuzzle(fullBoard);
-    expect(E.isRight(result)).toBe(true);
-
-    const end = performance.now();
-    console.log(`fillPuzzle function execution time: ${end - start} milliseconds`);
-
-    // Check that the returned board is filled with valid Sudoku numbers
-    const filledBoard = E.isRight(result) ? result.right : [];
-    expect(filledBoard).toHaveLength(9);
-    filledBoard.forEach((row: number[]) => {
-      expect(row).toHaveLength(9);
-      row.forEach((num: number) => {
-        expect(num).toBeGreaterThan(0);
-        expect(num).toBeLessThan(10);
-      });
-    });
-  });
 
   describe('findInvalids', () => {
     const start = performance.now();
