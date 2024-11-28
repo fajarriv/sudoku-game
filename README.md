@@ -60,7 +60,7 @@ In functional programming, data structures are not mutated; instead, new version
   );
 ```
 
-What happens?
+**What happens?**
 Instead of mutating currentBoard, a new board is created with the updated cell value. The map function ensures that only the relevant row/column is changed, and all other rows/columns remain untouched.
 
 - **Example in `removeCells`:**
@@ -73,7 +73,7 @@ Instead of mutating currentBoard, a new board is created with the updated cell v
   );
 ```
 
-What happens?
+**What happens?**
 A new board is created by replacing the target cell with an empty value while leaving the rest of the board unchanged.
 
 ### 2. Pure Functions
@@ -88,7 +88,7 @@ Pure functions depend only on their inputs and do not have side effects (e.g., m
     isBoxValid(board, row, col, num);
 ```
 
-Why is this pure?
+**Why is this pure?**
 It takes the board, row, col, and num as inputs and computes a boolean value based only on those inputs. It doesn’t rely on external data or change any global state.
 
 - **Example in `fillDiagonalBoxes`:**
@@ -111,7 +111,7 @@ It takes the board, row, col, and num as inputs and computes a boolean value bas
   };
 ```
 
-Why is this pure?
+**Why is this pure?**
 It computes a new version of the board with filled diagonal boxes and doesn’t change the original board or depend on external variables.
 
 ### 3. Declarative Programming
@@ -134,7 +134,7 @@ Functional programming focuses on what to do rather than how to do it. This is a
     );
 ```
 
-What happens?
+**What happens?**
 Instead of using nested loops, the pipe and fp-ts/Array combinators declaratively describe the sequence of transformations to locate the first empty cell in the board.
 
 ### 4. Composition
@@ -160,7 +160,7 @@ Functions are composed to create more complex behaviors while maintaining modula
       )
     );
 ```
-What happens?
+**What happens?**
 Functions like reduceWithIndex and pipe are composed to process each cell in the board, check its validity, and build a list of invalid cell positions.
 
 ### 5. Higher-Order Functions
@@ -185,7 +185,7 @@ Higher-order functions take other functions as arguments or return functions. Th
   };
 ```
 
-What happens?
+**What happens?**
 The reduceWithIndex function processes each cell in the box by applying a transformation (filling it with a shuffled number).
 
 ### 6. Monads (Option and Either)
@@ -208,7 +208,7 @@ Monads like Option and Either encapsulate computations that might fail, making e
     );
 ```
 
-Why use Option?
+**Why use Option?**
 The findEmptyCell function uses O.Option to handle the case where no empty cell exists gracefully without relying on null or throwing errors.
 
 - **Example in `fillRemaining`:**
@@ -245,7 +245,7 @@ The findEmptyCell function uses O.Option to handle the case where no empty cell 
   };
 ```
 
-Why use Either?
+**Why use Either?**
 This ensures that errors (like being unable to fill the board) are captured in the return type, rather than throwing an exception.
 
 ---
