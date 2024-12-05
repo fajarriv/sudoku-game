@@ -17,7 +17,7 @@ export const useSudokuTimer = (isComplete: boolean) => {
   }, []);
 
   useEffect(() => {
-    let interval: number;
+    let interval: NodeJS.Timer;
     if (!isComplete) {
       interval = setInterval(() => {
         setTimer((prev) => {
