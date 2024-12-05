@@ -1,12 +1,12 @@
 import * as O from 'fp-ts/Option'
 import * as A from 'fp-ts/Array'
+import * as R from 'fp-ts/Random'
 import { pipe } from 'fp-ts/function'
 
 export type Cell = number
 export type Row = Cell[]
 export type Board = Row[]
 
-const GRID_SIZE = 9
 const BOX_SIZE = 3
 const EMPTY_CELL: Cell = 0
 
@@ -40,10 +40,31 @@ export const isColumnValid = (board: Board, col: number, num: number): boolean =
   !getColumn(board, col).includes(num)
 
 export const isBoxValid = (board: Board, row: number, col: number, num: number): boolean =>
-  !getBox(board, Math.floor(row / BOX_SIZE), Math.floor(col / BOX_SIZE)).includes(num)
+  !getBox(board,row, col).includes(num)
 
 export const isValidPlacement = (board: Board, row: number, col: number, num: number): boolean =>
-  isRowValid(board, row, num) && isColumnValid(board, col, num) && isBoxValid(board, row, col, num)
+  isRowValid(board, row, num) && isColumnValid(board, col, num) && isBoxValid(board, row, col ,num)
+
+
+export const findInvalids = (board: Board): number[][] => {
+  return pipe(
+    board,
+    A.reduceWithIndex<Row, number[][]>([], (rowIdx, accRows, row) =>
+      pipe(
+        row,
+        A.reduceWithIndex<Cell, number[][]>(accRows, (colIdx, accInner, cell) => {
+          const originalValue = board[rowIdx][colIdx];
+          board[rowIdx][colIdx] = 0;
+          const invalid = cell !== 0 && !isValidPlacement(board, rowIdx, colIdx, cell);
+
+          board[rowIdx][colIdx] = originalValue;
+          return invalid ? [...accInner, [rowIdx, colIdx]] : accInner;
+        }
+        )
+      )
+    )
+  )
+}
 
 // mencari empty cell di board, akan mereturn posisi row dan col nya
 export const findEmptyCell = (board: Board): O.Option<[number, number]> =>
@@ -57,4 +78,16 @@ export const findEmptyCell = (board: Board): O.Option<[number, number]> =>
         O.map(col => [row, col] as [number, number])
       )
     )
+  )
+
+export const shuffle = (array: number[]): number[] =>
+  pipe(
+    A.range(0, array.length - 1),
+    A.reduce([...array], (acc, i) => {
+      const j = R.randomInt(0, i)()
+      const temp = acc[i]
+      acc[i] = acc[j]
+      acc[j] = temp
+      return acc
+    })
   )
